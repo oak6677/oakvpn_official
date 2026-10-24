@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" id="metaThemeColor" content="#0284c7">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <title>OAK VPN STORE</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg-gradient: linear-gradient(135deg, #a5f3fc 0%, #38bdf8 50%, #0284c7 100%);
+            --container-bg: #ffffff;
+            --text-main: #0c4a6e;
+            --text-muted: #0369a1;
+            --accent-color: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.4);
+            --border-color: rgba(2, 132, 199, 0.4);
+            --card-bg: #f0f9ff;
+            --card-border: #bae6fd;
+            --badge-bg: rgba(2, 132, 199, 0.15);
+            --input-bg: #f8fafc;
+            --input-text: #0c4a6e;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                color-scheme: dark;
+                --bg-gradient: linear-gradient(135deg, #08111e 0%, #0f1d30 50%, #1e3a5f 100%);
+                --container-bg: #13233c;
+                --text-main: #f0f6fc;
+                --text-muted: #8ab4f8;
+                --accent-color: #38bdf8;
+                --accent-glow: rgba(56, 189, 248, 0.4);
+                --border-color: rgba(56, 189, 248, 0.4);
+                --card-bg: #0f1d30;
+                --card-border: #1e3a5f;
+                --badge-bg: rgba(56, 189, 248, 0.15);
+                --input-bg: #0b1523;
+                --input-text: #ffffff;
+            }
+        }
+
+        [data-theme="dark"] {
+            color-scheme: dark;
+            --bg-gradient: linear-gradient(135deg, #08111e 0%, #0f1d30 50%, #1e3a5f 100%);
+            --container-bg: #13233c;
+            --text-main: #f0f6fc;
+            --text-muted: #8ab4f8;
+            --accent-color: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --border-color: rgba(56, 189, 248, 0.4);
+            --card-bg: #0f1d30;
+            --card-border: #1e3a5f;
+            --badge-bg: rgba(56, 189, 248, 0.15);
+            --input-bg: #0b1523;
+            --input-text: #ffffff;
+        }
+
+        [data-theme="light"] {
+            color-scheme: light;
+            --bg-gradient: linear-gradient(135deg, #a5f3fc 0%, #38bdf8 50%, #0284c7 100%);
+            --container-bg: #ffffff;
+            --text-main: #0c4a6e;
+            --text-muted: #0369a1;
+            --accent-color: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.4);
+            --border-color: rgba(2, 132, 199, 0.4);
+            --card-bg: #f0f9ff;
+            --card-border: #bae6fd;
+            --badge-bg: rgba(2, 132, 199, 0.15);
+            --input-bg: #f8fafc;
+            --input-text: #0c4a6e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pyidaungsu', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 🌟 WELCOME SPLASH SCREEN (အပြာနုလိုဂိုနှင့် လိုက်ဖက်သော ဒီဇိုင်း - အဝိုင်းဘောင်နှင့် CUSTOMER စာသား ဖယ်ရှားထားသည်) */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #ffffff 0%, #e0f2fe 55%, #bae6fd 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            padding: 24px;
+            text-align: center;
+        }
+        .splash-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-logo-clean {
+            width: 155px;
+            height: 155px;
+            object-fit: contain;
+            margin-bottom: 24px;
+            mix-blend-mode: multiply;
+            filter: drop-shadow(0 10px 22px rgba(2, 132, 199, 0.25));
+            animation: floatLogo 2.2s infinite ease-in-out;
+        }
+        .splash-title {
+            color: #0369a1;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(2, 132, 199, 0.18);
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+        .splash-spinner {
+            width: 38px;
+            height: 38px;
+            border: 3.5px solid rgba(2, 132, 199, 0.2);
+            border-top-color: #0284c7;
+            border-radius: 50%;
+            animation: spinLoader 0.8s linear infinite;
+        }
+        @keyframes spinLoader {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-6px) scale(1.04); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--container-bg);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px var(--accent-glow);
+            border: 2px solid var(--border-color);
+            padding: 22px;
+            overflow: hidden;
+        }
+        header { text-align: center; margin-bottom: 18px; }
+        .top-badge {
+            display: inline-block; background: var(--badge-bg); color: var(--accent-color);
+            font-size: 11px; padding: 6px 14px; border-radius: 20px;
+            border: 1px solid var(--border-color); letter-spacing: 1px; margin-bottom: 8px; font-weight: bold;
+        }
+        header h1 { color: var(--accent-color); font-size: 28px; margin-bottom: 4px; text-shadow: 0 0 12px var(--accent-glow); }
+        header p { color: var(--text-muted); font-size: 12px; }
+
+        .closed-card {
+            background: var(--card-bg); border: 2px dashed #ef4444;
+            border-radius: 18px; padding: 24px 18px; text-align: center; margin-bottom: 16px;
+        }
+        .closed-icon { font-size: 48px; margin-bottom: 10px; }
+        .closed-title { font-size: 18px; font-weight: bold; color: #ef4444; margin-bottom: 10px; }
+        .closed-desc { font-size: 14px; color: var(--text-main); line-height: 1.8; margin-bottom: 18px; }
+        .call-now-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; background: #10b981; color: #ffffff; text-decoration: none;
+            padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); margin-bottom: 10px;
+        }
+
+        .admin-shop-toggle-box {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
+        }
+        .shop-status-indicator { font-size: 13px; font-weight: bold; }
+        .toggle-shop-btn {
+            padding: 8px 12px; border-radius: 8px; font-size: 12px;
+            font-weight: bold; border: none; cursor: pointer; color: #ffffff;
+        }
+
+        .admin-promo-manager {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 12px; margin-bottom: 14px;
+        }
+        .promo-create-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .promo-create-grid input { padding: 9px 10px; font-size: 12px; border-radius: 8px; }
+        .promo-add-btn {
+            background: var(--accent-color); color: #fff; border: none;
+            border-radius: 8px; padding: 9px 12px; font-size: 12.5px; font-weight: bold; cursor: pointer;
+        }
+        .promo-tags-list { display: flex; flex-direction: column; gap: 6px; max-height: 120px; overflow-y: auto; }
+        .promo-tag-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--container-bg); border: 1px solid var(--card-border);
+            padding: 7px 10px; border-radius: 8px; font-size: 11.5px;
+        }
+
+        .steps-indicator { display: flex; justify-content: space-between; margin-bottom: 24px; position: relative; }
+        .step {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--card-bg);
+            border: 2px solid var(--card-border); display: flex; justify-content: center;
+            align-items: center; font-size: 13px; font-weight: bold; color: var(--text-muted); z-index: 2;
+        }
+        .step.active { border-color: var(--accent-color); background: var(--badge-bg); color: var(--accent-color); box-shadow: 0 0 12px var(--accent-glow); }
+        .step.completed { background: var(--accent-color); border-color: var(--accent-color); color: #ffffff; }
+
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; }
+
+        .section-title { font-size: 15px; color: var(--accent-color); margin-bottom: 12px; font-weight: bold; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-main); }
+        input[type="text"], input[type="number"], input[type="password"], input[type="file"] {
+            width: 100%; padding: 14px 16px; background: var(--input-bg);
+            border: 2px solid var(--card-border); border-radius: 12px;
+            color: var(--input-text); font-size: 15px; outline: none;
+        }
+        input[type="file"] { padding: 10px; cursor: pointer; }
+        .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+        .type-grid, .region-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .type-card, .region-card {
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 14px; padding: 14px; cursor: pointer; text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+        }
+        .region-card { flex-direction: row; text-align: left; }
+        .type-card.selected, .region-card.selected {
+            border-color: var(--accent-color); background: var(--badge-bg); box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .type-card span { font-size: 24px; }
+        .type-card p { font-size: 14px; font-weight: bold; color: var(--text-main); }
+        .region-card span { font-size: 28px; }
+        .r-name { font-size: 14px; font-weight: bold; color: var(--text-main); }
+        .r-desc { font-size: 11px; color: var(--text-muted); }
+
+        .package-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+        .package-card {
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 14px; padding: 16px; display: flex;
+            justify-content: space-between; align-items: center; cursor: pointer;
+        }
+        .package-card.selected { border-color: var(--accent-color); background: var(--badge-bg); box-shadow: 0 0 12px var(--accent-glow); }
+        .pkg-info .gb { font-size: 17px; font-weight: bold; color: var(--text-main); }
+        .pkg-info .duration { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+        .pkg-price { font-size: 17px; font-weight: bold; color: var(--accent-color); }
+        .popular-badge {
+            background: var(--accent-color); color: #ffffff; font-size: 10px; font-weight: bold;
+            padding: 2px 6px; border-radius: 4px; display: inline-block; margin-left: 6px;
+        }
+
+        .promo-box {
+            background: var(--card-bg); border: 1px dashed var(--border-color);
+            border-radius: 12px; padding: 12px; margin-bottom: 20px;
+        }
+        .promo-row { display: flex; gap: 8px; }
+        .promo-row input { padding: 10px 12px; font-size: 13px; }
+        .promo-apply-btn {
+            background: var(--accent-color); color: #fff; border: none;
+            padding: 0 16px; border-radius: 10px; font-size: 12.5px; font-weight: bold; cursor: pointer; white-space: nowrap;
+        }
+        .promo-msg { font-size: 11.5px; margin-top: 6px; font-weight: bold; display: none; }
+
+        .summary-box {
+            background: var(--card-bg); border: 2px dashed var(--border-color);
+            border-radius: 14px; padding: 16px; margin-bottom: 16px; word-break: break-all;
+        }
+        .summary-box h3 { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+        .summary-text { font-size: 14px; color: var(--text-main); line-height: 1.5; }
+
+        .payment-info-box {
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 16px; padding: 16px; margin-bottom: 16px;
+        }
+        .pay-channel {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--container-bg); padding: 12px 16px; border-radius: 12px;
+            margin-bottom: 10px; border: 1px solid var(--card-border);
+        }
+        .pay-channel:last-child { margin-bottom: 0; }
+        .pay-details h4 { font-size: 14px; font-weight: bold; }
+        .pay-details p { font-size: 13px; color: var(--text-muted); margin-top: 2px; font-family: monospace; }
+        .mini-copy-btn {
+            background: var(--badge-bg); color: var(--accent-color);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            font-size: 11px; font-weight: bold; border-radius: 8px; cursor: pointer;
+        }
+
+        .receipt-preview-box {
+            display: none; margin-top: 12px; background: var(--card-bg);
+            border: 2px dashed var(--border-color); border-radius: 12px; padding: 12px; text-align: center;
+        }
+        .receipt-preview-box.show { display: block; }
+        .receipt-preview-img { max-width: 100%; max-height: 180px; border-radius: 8px; cursor: pointer; }
+
+        /* One-Click, QR Code, Key Info Image & Guide Styles */
+        .direct-import-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff; border: none; padding: 12px 16px; border-radius: 10px;
+            font-size: 13.5px; font-weight: bold; cursor: pointer; margin: 10px 0;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); text-decoration: none;
+        }
+        .qr-code-box {
+            margin-top: 12px; padding: 12px; background: #ffffff;
+            border: 2px solid var(--card-border); border-radius: 12px;
+            text-align: center; display: inline-block;
+        }
+        .qr-code-box img { width: 150px; height: 150px; display: block; margin: 0 auto; }
+        .qr-label { font-size: 11px; color: #0c4a6e; font-weight: bold; margin-top: 6px; }
+
+        .key-info-img-box {
+            margin-top: 14px; padding: 12px; background: var(--card-bg);
+            border: 2px dashed var(--accent-color); border-radius: 14px; text-align: center;
+        }
+        .key-info-img-title { font-size: 12.5px; font-weight: bold; color: var(--accent-color); margin-bottom: 8px; }
+        .key-info-img {
+            max-width: 100%; max-height: 360px; border-radius: 10px;
+            border: 2px solid var(--card-border); cursor: pointer; object-fit: contain;
+        }
+        .save-img-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 8px; background: var(--accent-color); color: #ffffff;
+            border: none; padding: 8px 16px; border-radius: 8px;
+            font-size: 12px; font-weight: bold; cursor: pointer; width: 100%;
+        }
+
+        .guide-toggle-btn {
+            width: 100%; background: var(--badge-bg); color: var(--accent-color);
+            border: 1px dashed var(--border-color); padding: 10px 14px;
+            border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer;
+            margin-top: 12px; display: flex; justify-content: center; align-items: center; gap: 6px;
+        }
+        .guide-box {
+            display: none; background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 14px; margin-top: 10px; text-align: left;
+            font-size: 12.5px; line-height: 1.7; color: var(--text-main);
+        }
+        .guide-box.open { display: block; }
+        .guide-step { margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--card-border); }
+        .guide-step:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .guide-badge {
+            display: inline-block; background: var(--accent-color); color: #fff;
+            font-size: 11px; font-weight: bold; padding: 1px 7px; border-radius: 6px; margin-right: 4px;
+        }
+        .guide-badge.green { background: #10b981; }
+        .guide-badge.purple { background: #8b5cf6; }
+        .app-dl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
+        .app-dl-btn {
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+            background: var(--container-bg); color: var(--accent-color);
+            border: 1px solid var(--border-color); padding: 8px 10px; border-radius: 8px;
+            font-size: 11.5px; font-weight: bold; text-decoration: none; text-align: center;
+        }
+
+        .countdown-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 4px; }
+        .countdown-badge.ok { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; }
+        .countdown-badge.soon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
+        .countdown-badge.expired { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
+
+        .quick-renew-btn {
+            width: 100%; margin-top: 8px; background: var(--badge-bg);
+            color: var(--accent-color); border: 1px solid var(--border-color);
+            padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;
+        }
+
+        .check-order-trigger {
+            width: 100%; margin-top: 12px; background: var(--card-bg);
+            color: var(--accent-color); border: 2px dashed var(--border-color);
+            padding: 12px; border-radius: 12px; font-size: 13.5px; font-weight: bold; cursor: pointer; text-align: center;
+        }
+        .order-lookup-card {
+            background: var(--card-bg); border: 2px solid var(--card-border);
+            border-radius: 14px; padding: 14px; margin-bottom: 12px; text-align: left; word-break: break-all;
+        }
+        .order-lookup-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed var(--card-border);
+        }
+        .status-tag { font-size: 10.5px; font-weight: bold; padding: 2px 8px; border-radius: 12px; }
+        .status-tag.done { background: rgba(74, 222, 128, 0.2); color: #16a34a; border: 1px solid #4ade80; }
+        .status-tag.wait { background: rgba(248, 113, 113, 0.2); color: #dc2626; border: 1px solid #f87171; }
+
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+        .stat-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 12px; padding: 10px 6px; text-align: center;
+        }
+        .stat-card .stat-label { font-size: 10.5px; color: var(--text-muted); margin-bottom: 4px; }
+        .stat-card .stat-value { font-size: 14px; font-weight: bold; color: var(--accent-color); }
+
+        .wizard-btns { display: flex; gap: 10px; }
+        .btn {
+            width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold;
+            text-align: center; cursor: pointer; border: none;
+        }
+        .btn-primary { background-color: var(--accent-color); color: #ffffff; box-shadow: 0 0 15px var(--accent-glow); }
+        .btn-secondary { background-color: var(--card-border); color: var(--text-main); }
+
+        .footer-contact { text-align: center; border-top: 2px solid var(--card-border); padding-top: 16px; margin-top: 24px; }
+        .footer-contact h4 { font-size: 14px; color: var(--text-main); margin-bottom: 6px; }
+        .contact-links { display: flex; justify-content: center; gap: 16px; margin-bottom: 12px; }
+        .contact-links a { font-size: 13px; color: var(--accent-color); text-decoration: none; }
+        .admin-link { font-size: 11px; color: var(--text-muted); text-decoration: none; display: inline-block; margin-bottom: 12px; }
+        .theme-toggle-footer {
+            background: var(--badge-bg); border: 1px solid var(--border-color);
+            color: var(--accent-color); padding: 8px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; font-weight: bold;
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-content, .edit-modal-content {
+            background: var(--container-bg); border: 2px solid var(--border-color);
+            padding: 24px; border-radius: 20px; max-width: 380px; width: 90%; text-align: center;
+        }
+        .edit-modal-content { text-align: left; }
+
+        .admin-section-title { font-size: 14px; color: var(--accent-color); margin: 12px 0 6px 0; font-weight: bold; text-align: left; }
+        .admin-table-container { max-height: 220px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 10px; margin-bottom: 10px; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 11px; table-layout: fixed; }
+        .admin-table th, .admin-table td {
+            border: 1px solid var(--card-border); padding: 6px 4px; text-align: center; vertical-align: middle;
+            word-break: break-word; overflow-wrap: anywhere;
+        }
+        .admin-table th { background: var(--badge-bg); color: var(--accent-color); font-weight: bold; position: sticky; top: 0; z-index: 5; }
+        .action-btns { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+        .action-btn { padding: 4px 6px; font-size: 10px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; }
+        .edit-btn { background: #38bdf8; color: #000; }
+        .delete-btn { background: #ef4444; color: #fff; }
+        .copy-btn { background: #10b981; color: #fff; padding: 3px 6px; font-size: 9px; border-radius: 4px; cursor: pointer; border: none; margin-top: 3px; }
+        .receipt-thumb { width: 35px; height: 35px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--accent-color); margin-top: 2px; }
+
+        .image-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .image-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-img { max-width: 90%; max-height: 85vh; border-radius: 12px; border: 2px solid var(--accent-color); }
+        .close-modal { position: absolute; top: 20px; right: 25px; background: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<!-- 🌟 WELCOME SPLASH SCREEN (အဝိုင်းဘောင်မပါ၊ CUSTOMER စာသားမပါ၊ အပြာနုရောင်ဒီဇိုင်း) -->
+<div id="welcomeSplash" class="splash-screen">
+    <img src="icon.png" class="splash-logo-clean" alt="OAK VPN Logo" onerror="this.src='../icon.png'">
+    <div class="splash-title">OAK VPN store မှ ကြိုဆိုပါတယ်</div>
+    <div class="splash-spinner"></div>
+</div>
+
+<div class="container">
+    <header>
+        <div class="top-badge">SECURE V2BOX PROXY HUB</div>
+        <h1>OAK K</h1>
+        <p id="headerSubtitle">V2box VPN Portal</p>
+    </header>
+
+    <div id="shopClosedView" style="display: none;">
+        <div class="closed-card">
+            <div class="closed-icon">🚧</div>
+            <div class="closed-title">ခေတ္တခဏ ဆိုင်ပိတ်ထားပါသည်</div>
+            <p class="closed-desc">
+                လက်ရှိတွင် Admin မအားလပ်သေးပါသဖြင့် ဝယ်ယူမှုကို ခေတ္တခဏ ပိတ်ထားပါသည်ခင်ဗျာ။<br>အရေးကြီးပါက အောက်ပါဖုန်းနံပါတ်သို့ ဆက်သွယ်ပေးပါ -
+            </p>
+            <a href="tel:09779984937" class="call-now-btn">📞 09779984937 သို့ ဖုန်းဆက်ရန်</a>
+        </div>
+        <button type="button" class="check-order-trigger" onclick="openCheckOrderView()">🔍 မိမိဝယ်ယူထားပြီးသော Key ကို စစ်ဆေးရန်</button>
+    </div>
+
+    <div id="portalView">
+        <div class="steps-indicator" id="stepsIndicatorBar">
+            <div class="step active" id="indicator1">1</div>
+            <div class="step" id="indicator2">2</div>
+            <div class="step" id="indicator3">3</div>
+            <div class="step" id="indicator4">4</div>
+        </div>
+
+        <div class="wizard-step active" id="step1">
+            <div class="section-title">အဆင့် ၁။ ဝယ်ယူမည့် ပုံစံရွေးချယ်ပါ</div>
+            <div class="type-grid">
+                <div class="type-card selected" id="typeNew" onclick="setOrderType('new')">
+                    <span>🚀</span>
+                    <p>Key အသစ်ဝယ်ရန်</p>
+                </div>
+                <div class="type-card" id="typeRenewal" onclick="setOrderType('renewal')">
+                    <span>🔄</span>
+                    <p>သက်တမ်းတိုးရန်</p>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="nextStep()">ရှေ့သို့ ➔</button>
+            <button type="button" class="check-order-trigger" onclick="openCheckOrderView()">🔍 မိမိဝယ်ယူထားသော Key နှင့် သက်တမ်းလက်ကျန် စစ်ဆေးရန်</button>
+        </div>
+
+        <div class="wizard-step" id="step2">
+            <div class="section-title" id="step2Title">အဆင့် ၂။ နာမည်ထည့်သွင်းပါ</div>
+            <div class="form-group" id="nameGroup">
+                <label>VPN တွင် အသုံးပြုမည့် နာမည်</label>
+                <input type="text" id="username" placeholder="ဥပမာ - Aung Aung">
+            </div>
+            <div class="form-group" id="renewalGroup" style="display: none;">
+                <label>သက်တမ်းတိုးမည့် ယခင် Key / Username</label>
+                <input type="text" id="prevKey" placeholder="ဥပမာ - vless://... သို့မဟုတ် Name">
+            </div>
+            <div class="wizard-btns">
+                <button class="btn btn-secondary" onclick="prevStep()">⬅ နောက်သို့</button>
+                <button class="btn btn-primary" onclick="validateStep2()">ရှေ့သို့ ➔</button>
+            </div>
+        </div>
+
+        <div class="wizard-step" id="step3">
+            <div class="section-title">အဆင့် ၃။ Region နှင့် Package ရွေးပါ</div>
+            <div class="form-group">
+                <label>Region</label>
+                <div class="region-grid">
+                    <div class="region-card selected" onclick="selectRegion('Singapore', '🇸🇬', this)">
+                        <span>🇸🇬</span><div><div class="r-name">Singapore</div><div class="r-desc">Ultra Fast</div></div>
+                    </div>
+                    <div class="region-card" onclick="selectRegion('Japan', '🇯🇵', this)">
+                        <span>🇯🇵</span><div><div class="r-name">Japan</div><div class="r-desc">Low Ping</div></div>
+                    </div>
+                    <div class="region-card" onclick="selectRegion('United States', '🇺🇸', this)">
+                        <span>🇺🇸</span><div><div class="r-name">United States</div><div class="r-desc">Global Server</div></div>
+                    </div>
+                    <div class="region-card" onclick="selectRegion('Thailand', '🇹🇭', this)">
+                        <span>🇹🇭</span><div><div class="r-name">Thailand</div><div class="r-desc">Fast Routing</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Data Package</label>
+                <div class="package-list">
+                    <div class="package-card selected" onclick="selectPackage('100 GB', '၁ လ', 6000, 1, this)">
+                        <div class="pkg-info"><div class="gb">100 GB <span class="popular-badge">POPULAR</span></div><div class="duration">သက်တမ်း - ၁ လ</div></div>
+                        <div class="pkg-price">6,000 ကျပ်</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage('300 GB', '၂ လ', 18000, 2, this)">
+                        <div class="pkg-info"><div class="gb">300 GB</div><div class="duration">သက်တမ်း - ၂ လ</div></div>
+                        <div class="pkg-price">18,000 ကျပ်</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage('500 GB', '၃ လ', 28000, 3, this)">
+                        <div class="pkg-info"><div class="gb">500 GB</div><div class="duration">သက်တမ်း - ၃ လ</div></div>
+                        <div class="pkg-price">28,000 ကျပ်</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage('700 GB', '၆ လ', 40000, 6, this)">
+                        <div class="pkg-info"><div class="gb">700 GB</div><div class="duration">သက်တမ်း - ၆ လ</div></div>
+                        <div class="pkg-price">40,000 ကျပ်</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage('1,500 GB', '၁၂ လ', 80000, 12, this)">
+                        <div class="pkg-info"><div class="gb">1,500 GB</div><div class="duration">သက်တမ်း - ၁၂ လ</div></div>
+                        <div class="pkg-price">80,000 ကျပ်</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="promo-box">
+                <label style="font-size: 12.5px; margin-bottom: 6px;">🎟️ Promo Code (လျှော့ဈေးကုဒ်ရှိပါက ထည့်ပါ)</label>
+                <div class="promo-row">
+                    <input type="text" id="promoInput" placeholder="Promo Code ရိုက်ထည့်ပါ">
+                    <button type="button" class="promo-apply-btn" onclick="applyPromoCode()">အသုံးပြုမည်</button>
+                </div>
+                <div id="promoMsg" class="promo-msg"></div>
+            </div>
+
+            <div class="wizard-btns">
+                <button class="btn btn-secondary" onclick="prevStep()">⬅ နောက်သို့</button>
+                <button class="btn btn-primary" onclick="prepareCheckout()">အတည်ပြုမည် ➔</button>
+            </div>
+        </div>
+
+        <div class="wizard-step" id="step4">
+            <div class="section-title">အဆင့် ၄။ KPay / WavePay ဖြင့် ငွေပေးချေရန်</div>
+            <div class="summary-box">
+                <h3>ရွေးချယ်ထားသော အချက်အလက် -</h3>
+                <div class="summary-text" id="summaryText">...</div>
+            </div>
+
+            <div class="payment-info-box">
+                <div class="pay-channel">
+                    <div class="pay-details"><h4>💳 KBZ Pay</h4><p>09779984937 (U OAKKAR KYA)</p></div>
+                    <button class="mini-copy-btn" onclick="copyTextDirect('09779984937')">📋 Copy</button>
+                </div>
+                <div class="pay-channel">
+                    <div class="pay-details"><h4>💴 Wave Pay</h4><p>09779984937 (Oakkar Kyaw)</p></div>
+                    <button class="mini-copy-btn" onclick="copyTextDirect('09779984937')">📋 Copy</button>
+                </div>
+                <p style="font-size: 15px; font-weight: bold; color: var(--accent-color); text-align: center; margin-top: 12px;" id="payAmount">ကျသင့်ငွေ - 6,000 ကျပ်</p>
+            </div>
+
+            <div class="form-group">
+                <label>ငွေလွှဲပြေစာ ပုံတင်ရန် (Screenshot) <span style="color:#ef4444; font-weight:bold;">*မဖြစ်မနေထည့်ရန်</span></label>
+                <input type="file" id="receiptImg" accept="image/*" onchange="previewReceiptBeforeSubmit(this)">
+                <div class="receipt-preview-box" id="receiptPreviewBox">
+                    <img id="receiptPreviewImg" class="receipt-preview-img" src="" alt="Preview" onclick="showDirectImageModal(this.src)">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="submitOrderBtn" onclick="submitOrder()">အော်ဒါတင်မည် ✅</button>
+            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="prevStep()">⬅ အချက်အလက် ပြန်ပြင်ရန်</button>
+        </div>
+
+        <div class="wizard-step" id="step5">
+            <div class="section-title" style="text-align: center; color: #4ade80;">🎉 မှာယူမှု အောင်မြင်ပါသည်။</div>
+            <div id="resultBox"></div>
+            <div id="exitAfterKeyContainer" style="display: none; margin-top: 18px;">
+                <button class="btn btn-primary" onclick="resetAndExitPortal()">🏠 ပင်မစာမျက်နှာသို့ ပြန်ထွက်ရန်</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkOrderView" style="display: none;">
+        <div class="section-title">🔍 မိမိဝယ်ယူထားသော Key စစ်ဆေးရန်</div>
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 13px;">သင့်ရဲ့ <b>Order ID</b> (သို့) <b>နာမည်/Key</b> ကို ရိုက်ထည့်ပါ</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="lookupInput" placeholder="ဥပမာ - 17928... သို့မဟုတ် Oakkar">
+                <button class="btn btn-primary" style="width: auto; padding: 0 18px; font-size: 13px;" onclick="searchCustomerOrderSecure()">စစ်ဆေးမည်</button>
+            </div>
+        </div>
+        <div id="lookupResultsContainer" style="max-height: 400px; overflow-y: auto; margin-bottom: 14px;"></div>
+        <button class="btn btn-secondary" onclick="backToPortal()">⬅ ပင်မစာမျက်နှာသို့ ပြန်သွားရန်</button>
+    </div>
+
+    <div id="adminLoginView" style="display: none; text-align: center; padding: 20px 0;">
+        <div class="section-title" style="justify-content: center;">🔒 Admin Password ထည့်ပါ</div>
+        <div class="form-group">
+            <input type="password" id="adminPassInput" placeholder="Password ရိုက်ထည့်ပါ" style="text-align: center;">
+        </div>
+        <button class="btn btn-primary" onclick="verifyAdmin()">ဝင်ရောက်မည်</button>
+        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="backToPortal()">⬅ ပင်မစာမျက်နှာသို့</button>
+    </div>
+
+    <div id="adminDashboardView" style="display: none;">
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span>📊 ဝယ်ယူမှုမှတ်တမ်း (Sales History)</span>
+            <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;" onclick="backToPortal()">ထွက်မည်</button>
+        </div>
+
+        <div class="admin-shop-toggle-box">
+            <div class="shop-status-indicator" id="adminShopStatusText">🟢 လက်ရှိ - ဆိုင်ဖွင့်ထားသည်</div>
+            <button type="button" class="toggle-shop-btn" id="adminShopToggleBtn" style="background: #ef4444;" onclick="toggleShopStatusFromAdmin()">
+                🔴 ဆိုင်ခေတ္တပိတ်မည်
+            </button>
+        </div>
+
+        <div class="admin-promo-manager">
+            <div style="font-size: 12.5px; font-weight: bold; color: var(--accent-color); margin-bottom: 8px;">
+                🎟️ Promo Code နှင့် သုံးနိုင်သူဦးရေ စီမံရန် (ဖုန်းအားလုံးအတွက်)
+            </div>
+            <div class="promo-create-grid">
+                <input type="text" id="newPromoCodeInput" placeholder="ကုဒ်နာမည် (ဥပမာ VIP)">
+                <input type="number" id="newPromoDiscountInput" placeholder="လျှော့ငွေ (ဥပမာ 500)">
+                <input type="number" id="newPromoLimitInput" placeholder="လူဦးရေ (ဥပမာ 10)">
+                <button type="button" class="promo-add-btn" onclick="addOrUpdatePromoFromAdmin()">➕ ထည့်မည်</button>
+            </div>
+            <div class="promo-tags-list" id="adminPromoListContainer"></div>
+        </div>
+
+        <div class="admin-stats-grid">
+            <div class="stat-card"><div class="stat-label">စုစုပေါင်းအော်ဒါ</div><div class="stat-value" id="statTotalOrders">0</div></div>
+            <div class="stat-card"><div class="stat-label">စောင့်ဆိုင်းဆဲ</div><div class="stat-value" id="statPendingOrders" style="color: #f87171;">0</div></div>
+            <div class="stat-card"><div class="stat-label">ရောင်းရငွေ စုစုပေါင်း</div><div class="stat-value" id="statTotalRevenue" style="color: #4ade80;">0 ကျပ်</div></div>
+        </div>
+        
+        <div class="admin-section-title">🚀 Key အသစ် ဝယ်ယူမှုများ</div>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Order ID / နာမည်</th><th>Region</th><th>Package / သက်တမ်း</th><th>ကုန်ဆုံးရက်</th><th>လုပ်ဆောင်ချက်</th></tr>
+                </thead>
+                <tbody id="newOrdersTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="admin-section-title">🔄 သက်တမ်းတိုးမှုများ</div>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Order ID / ယခင် Key</th><th>Region</th><th>Package / သက်တမ်း</th><th>ကုန်ဆုံးရက်</th><th>လုပ်ဆောင်ချက်</th></tr>
+                </thead>
+                <tbody id="renewalOrdersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer-contact">
+        <h4>တိုက်ရိုက်ဆက်သွယ်ရန်</h4>
+        <div class="contact-links">
+            <a href="https://t.me/Jocker_456" target="_blank">Telegram: @Jocker_456</a>
+            <a href="viber://chat?number=%2B959779984937" target="_blank">Viber</a>
+        </div>
+        <div><a href="#" class="admin-link" onclick="openAdminLogin(event)">🔐 Admin Sales History</a></div>
+        <button class="theme-toggle-footer" onclick="toggleTheme()">🌓 Theme ပြောင်းရန်</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+        <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
+        <h3>အော်ဒါတင်ခြင်း အောင်မြင်သည်!</h3>
+        <p>Admin ထံသို့ အော်ဒါပေးပို့ပြီးပါပြီ...</p>
+    </div>
+</div>
+
+<div class="image-modal-overlay" id="imageModal" onclick="closeImageModal()">
+    <button class="close-modal" onclick="closeImageModal()">✕ ပိတ်မည်</button>
+    <img id="modalImage" class="modal-img" src="" alt="Receipt">
+</div>
+
+<div class="modal-overlay" id="editModal">
+    <div class="edit-modal-content">
+        <div class="section-title" style="margin-bottom: 12px;">✏️ Admin မှ အချက်အလက်ဖြည့်ရန်</div>
+        <input type="hidden" id="editId">
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12px;" id="editLabelKey">V2box Key (သို့) အကြောင်းကြားစာ</label>
+            <input type="text" id="editKeyVal" placeholder="vless://... သို့မဟုတ် သက်တမ်းတိုးပြီးပါပြီ">
+        </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+            <label style="font-size: 12px;">🖼️ Key Info ပုံ ထည့်ရန် (Optional)</label>
+            <input type="file" id="editKeyImgInput" accept="image/*" style="font-size: 12px; padding: 8px;">
+        </div>
+        <div class="wizard-btns">
+            <button class="btn btn-secondary" onclick="closeEditModal()">မလုပ်တော့ပါ</button>
+            <button class="btn btn-primary" onclick="saveAdminResponse()">သိမ်းဆည်းမည်</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const TELEGRAM_BOT_TOKEN = '8747727485:AAHkMh2ebWKc3rUd2ON8a3RMnx0jiAGJP5w';
+    const TELEGRAM_CHAT_ID = '1428942456';
+
+    let currentStep = 1;
+    let orderType = 'new';
+    let selectedRegionName = 'Singapore';
+    let selectedFlag = '🇸🇬';
+    let selectedPkgName = '100 GB';
+    let selectedDuration = '၁ လ';
+    let selectedRawPrice = 6000;
+    let appliedDiscount = 0;
+    let appliedPromoCode = '';
+    let selectedMonths = 1;
+    let currentOrderId = null;
+    let memoryOrdersFallback = [];
+    let isGuideOpen = false;
+    let telegramFileUrlCache = {};
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('welcomeSplash');
+            if (splash) splash.classList.add('hide');
+        }, 2000);
+    });
+
+    // 🌐 GLOBAL CLOUD SYNC (Full Key မပျက်စီးစေဘဲ သိမ်းဆည်းပေးသည့် စနစ်)
+    async function pushGlobalStateToCloud(closedState, promoRulesObj, timestamp, ordersList) {
+        if (!TELEGRAM_BOT_TOKEN) return;
+        const compactOrders = (ordersList || getStoredOrders()).slice(0, 6).map(o => ({
+            i: o.id,
+            y: o.type === 'သက်တမ်းတိုး' ? 1 : 0,
+            n: String(o.identifier || '').substring(0, 14),
+            g: String(o.region || 'SG').substring(0, 10),
+            k: String(o.package || '').substring(0, 18),
+            r: o.rawPrice || 6000,
+            e: o.expDate || '',
+            d: o.adminResponse ? 1 : 0
+        }));
+
+        const statePayload = {
+            c: closedState ? 1 : 0,
+            t: timestamp || Math.floor(Date.now() / 1000),
+            p: promoRulesObj || getPromoRules(),
+            o: compactOrders
+        };
+
+        let descText = 'OAKK_SYNC:' + JSON.stringify(statePayload);
+        if (descText.length > 510) {
+            statePayload.o = compactOrders.slice(0, 3);
+            descText = 'OAKK_SYNC:' + JSON.stringify(statePayload);
+        }
+
+        try {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setMyDescription`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description: descText })
+            });
+        } catch (e) {}
+    }
+
+    async function pullGlobalStateFromCloud() {
+        if (!TELEGRAM_BOT_TOKEN) return;
+        try {
+            const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMyDescription`);
+            const data = await res.json();
+            if (data.ok && data.result && data.result.description) {
+                const desc = data.result.description;
+                if (desc.startsWith('OAKK_SYNC:')) {
+                    const payload = JSON.parse(desc.substring('OAKK_SYNC:'.length));
+
+                    const localTime = Number(localStorage.getItem('oak_k_shop_status_time') || 0);
+                    if (payload.t && payload.t >= localTime) {
+                        localStorage.setItem('oak_k_shop_closed', payload.c === 1 ? 'true' : 'false');
+                        localStorage.setItem('oak_k_shop_status_time', String(payload.t));
+                    }
+                    if (payload.p && typeof payload.p === 'object') {
+                        localStorage.setItem('oak_k_custom_promos_v2', JSON.stringify(payload.p));
+                    }
+                    if (payload.o && Array.isArray(payload.o)) {
+                        const localOrders = getStoredOrders();
+                        let mergedMap = new Map();
+                        localOrders.forEach(lo => { if (lo && lo.id) mergedMap.set(String(lo.id), lo); });
+
+                        payload.o.forEach(co => {
+                            const cid = String(co.i || co.id);
+                            if (!mergedMap.has(cid)) {
+                                mergedMap.set(cid, {
+                                    id: co.i || co.id,
+                                    type: co.y === 1 ? 'သက်တမ်းတိုး' : 'Key အသစ်',
+                                    identifier: co.n || '-',
+                                    region: co.g || 'Singapore 🇸🇬',
+                                    package: co.k || `${(co.r || 6000).toLocaleString()} ကျပ်`,
+                                    rawPrice: co.r || 6000,
+                                    expDate: co.e || '-',
+                                    adminResponse: '',
+                                    receipt: '',
+                                    adminImage: ''
+                                });
+                            }
+                        });
+
+                        let combined = Array.from(mergedMap.values()).sort((a, b) => Number(b.id) - Number(a.id));
+                        memoryOrdersFallback = combined;
+                        try { localStorage.setItem('vpn_orders', JSON.stringify(combined)); } catch (e) {}
+                    }
+                    applyShopStatusUI();
+                    renderAdminPromoList();
+                }
+            }
+        } catch (e) {}
+    }
+
+    async function resolveTelegramFileUrl(fileId) {
+        if (telegramFileUrlCache[fileId]) return telegramFileUrlCache[fileId];
+        try {
+            const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getFile?file_id=${fileId}`);
+            const data = await res.json();
+            if (data.ok && data.result && data.result.file_path) {
+                const fullUrl = `https://api.telegram.org/file/bot${TELEGRAM_BOT_TOKEN}/${data.result.file_path}`;
+                telegramFileUrlCache[fileId] = fullUrl;
+                return fullUrl;
+            }
+        } catch (e) {}
+        return null;
+    }
+
+    async function downloadKeyInfoImage(imgUrl, orderId) {
+        if (!imgUrl) return;
+        const fileName = `OAK_VPN_Key_${orderId || 'Info'}.jpg`;
+        try {
+            if (imgUrl.startsWith('data:')) {
+                const a = document.createElement('a');
+                a.href = imgUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                alert('✅ ပုံကို ဖုန်းထဲသို့ သိမ်းဆည်းပြီးပါပြီ။');
+                return;
+            }
+            window.open(imgUrl, '_blank');
+        } catch (err) {
+            window.open(imgUrl, '_blank');
+        }
+    }
+
+    function importKeyToV2boxApp(encodedKey) {
+        const key = decodeURIComponent(encodedKey || '');
+        if (!key) return;
+        navigator.clipboard.writeText(key);
+        window.location.href = `v2box://install-sub?url=${encodeURIComponent(key)}&name=OAK_K_VPN`;
+        setTimeout(() => {
+            alert('✅ Key ကို Auto Copy ကူးပြီး V2box App သို့ ချိတ်ဆက်ပေးထားပါသည်။');
+        }, 600);
+    }
+
+    function toggleUserGuide() {
+        isGuideOpen = !isGuideOpen;
+        const box = document.getElementById('userGuideBox');
+        const btn = document.getElementById('guideToggleBtn');
+        if (box && btn) {
+            if (isGuideOpen) {
+                box.classList.add('open');
+                btn.innerHTML = '🔼 အသုံးပြုနည်း လမ်းညွှန် ပြန်ပိတ်ရန်';
+            } else {
+                box.classList.remove('open');
+                btn.innerHTML = '📖 One-Click နှင့် QR Code အသုံးပြုနည်း လမ်းညွှန်ကြည့်ရန်';
+            }
+        }
+    }
+
+    function getRemainingDaysBadge(expDateStr) {
+        if (!expDateStr) return '';
+        const expDate = new Date(expDateStr);
+        if (isNaN(expDate.getTime())) return '';
+        const diffDays = Math.ceil((expDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) return `<span class="countdown-badge expired">❌ သက်တမ်းကုန်ဆုံးသွားပါပြီ</span>`;
+        if (diffDays <= 5) return `<span class="countdown-badge soon">⚠️ သက်တမ်းကုန်ရန် ${diffDays} ရက်သာ ကျန်ပါတော့သည်</span>`;
+        return `<span class="countdown-badge ok">⏳ သက်တမ်း ${diffDays} ရက် ကျန်ပါသေးသည်</span>`;
+    }
+
+    function startQuickRenewal(identifier) {
+        backToPortal();
+        if (isShopClosed()) return;
+        setOrderType('renewal');
+        document.getElementById('prevKey').value = identifier || '';
+        showStep(3);
+    }
+
+    function getPromoRules() {
+        try {
+            const raw = localStorage.getItem('oak_k_custom_promos_v2');
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return {};
+    }
+
+    function savePromoRules(rules, syncToCloud = true) {
+        try { localStorage.setItem('oak_k_custom_promos_v2', JSON.stringify(rules)); } catch (e) {}
+        if (syncToCloud) pushGlobalStateToCloud(isShopClosed(), rules, Math.floor(Date.now() / 1000), getStoredOrders());
+    }
+
+    function getPromoUsedCount(code) {
+        const upper = (code || '').toUpperCase();
+        const orders = getStoredOrders();
+        const orderMatches = orders.filter(o => (o.promoCode || '').toUpperCase() === upper).length;
+        const rules = getPromoRules();
+        const manualUsed = (rules[upper] && rules[upper].usedCount) ? rules[upper].usedCount : 0;
+        return Math.max(orderMatches, manualUsed);
+    }
+
+    async function applyPromoCode() {
+        await pullGlobalStateFromCloud();
+        const code = (document.getElementById('promoInput').value || '').trim().toUpperCase();
+        const msgEl = document.getElementById('promoMsg');
+        if (!code) { appliedDiscount = 0; appliedPromoCode = ''; msgEl.style.display = 'none'; return; }
+
+        const rules = getPromoRules();
+        const promo = rules[code];
+        if (!promo || getPromoUsedCount(code) >= Number(promo.maxUses || 1)) {
+            appliedDiscount = 0; appliedPromoCode = '';
+            msgEl.style.display = 'block'; msgEl.style.color = '#ef4444';
+            msgEl.innerText = '❌ Promo Code မရှိပါ သို့မဟုတ် သုံးစွဲသူ ပြည့်သွားပါပြီ။';
+            return;
+        }
+        appliedDiscount = Number(promo.discount || 0);
+        appliedPromoCode = code;
+        msgEl.style.display = 'block'; msgEl.style.color = '#10b981';
+        msgEl.innerText = `✅ Promo Code (${code}) -${appliedDiscount.toLocaleString()} ကျပ် လျှော့ပေးထားပါသည်။`;
+    }
+
+    function renderAdminPromoList() {
+        const container = document.getElementById('adminPromoListContainer');
+        if (!container) return;
+        const rules = getPromoRules();
+        const keys = Object.keys(rules);
+        if (keys.length === 0) {
+            container.innerHTML = `<div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 6px;">လက်ရှိသတ်မှတ်ထားသော Promo Code မရှိသေးပါ။</div>`;
+            return;
+        }
+        container.innerHTML = '';
+        keys.forEach(code => {
+            const item = rules[code];
+            const used = getPromoUsedCount(code);
+            container.innerHTML += `
+                <div class="promo-tag-item">
+                    <div><b style="color: var(--accent-color);">${code}</b> (-${Number(item.discount).toLocaleString()} Ks) [${used}/${item.maxUses} ဦး]</div>
+                    <button type="button" class="action-btn delete-btn" onclick="deletePromoFromAdmin('${code}')">ဖျက်</button>
+                </div>
+            `;
+        });
+    }
+
+    function addOrUpdatePromoFromAdmin() {
+        const code = (document.getElementById('newPromoCodeInput').value || '').trim().toUpperCase();
+        const discount = parseInt(document.getElementById('newPromoDiscountInput').value, 10);
+        const maxUses = parseInt(document.getElementById('newPromoLimitInput').value, 10);
+        if (!code || isNaN(discount) || isNaN(maxUses)) { alert('⚠️ အချက်အလက် အပြည့်အစုံ ထည့်ပါ။'); return; }
+        let rules = getPromoRules();
+        rules[code] = { discount, maxUses, usedCount: 0 };
+        savePromoRules(rules, true);
+        document.getElementById('newPromoCodeInput').value = '';
+        document.getElementById('newPromoDiscountInput').value = '';
+        document.getElementById('newPromoLimitInput').value = '';
+        renderAdminPromoList();
+    }
+
+    function deletePromoFromAdmin(code) {
+        let rules = getPromoRules();
+        delete rules[code];
+        savePromoRules(rules, true);
+        renderAdminPromoList();
+    }
+
+    function isShopClosed() {
+        try { return localStorage.getItem('oak_k_shop_closed') === 'true'; } catch (e) { return false; }
+    }
+
+    function setShopClosedState(closed, updateTime, syncToCloud = false) {
+        const ts = updateTime || Math.floor(Date.now() / 1000);
+        try {
+            localStorage.setItem('oak_k_shop_closed', closed ? 'true' : 'false');
+            localStorage.setItem('oak_k_shop_status_time', String(ts));
+        } catch (e) {}
+        applyShopStatusUI();
+        if (syncToCloud) pushGlobalStateToCloud(closed, getPromoRules(), ts, getStoredOrders());
+    }
+
+    function applyShopStatusUI() {
+        const closed = isShopClosed();
+        const statusText = document.getElementById('adminShopStatusText');
+        const toggleBtn = document.getElementById('adminShopToggleBtn');
+        if (statusText && toggleBtn) {
+            if (closed) {
+                statusText.innerHTML = '🔴 လက်ရှိ - <span style="color:#ef4444;">ဆိုင်ခေတ္တပိတ်ထားသည်</span>';
+                toggleBtn.style.background = '#10b981';
+                toggleBtn.innerText = '🟢 ဆိုင်ပြန်ဖွင့်မည်';
+            } else {
+                statusText.innerHTML = '🟢 လက်ရှိ - <span style="color:#10b981;">ဆိုင်ဖွင့်ထားသည်</span>';
+                toggleBtn.style.background = '#ef4444';
+                toggleBtn.innerText = '🔴 ဆိုင်ခေတ္တပိတ်မည်';
+            }
+        }
+        const adminLoginVisible = document.getElementById('adminLoginView').style.display === 'block';
+        const adminDashVisible = document.getElementById('adminDashboardView').style.display === 'block';
+        const checkOrderVisible = document.getElementById('checkOrderView').style.display === 'block';
+        if (!adminLoginVisible && !adminDashVisible && !checkOrderVisible) {
+            if (currentStep === 5 && currentOrderId) {
+                document.getElementById('shopClosedView').style.display = 'none';
+                document.getElementById('portalView').style.display = 'block';
+                return;
+            }
+            document.getElementById('shopClosedView').style.display = closed ? 'block' : 'none';
+            document.getElementById('portalView').style.display = closed ? 'none' : 'block';
+        }
+    }
+
+    async function toggleShopStatusFromAdmin() {
+        setShopClosedState(!isShopClosed(), Math.floor(Date.now() / 1000), true);
+    }
+
+    function getStoredOrders() {
+        try {
+            const raw = localStorage.getItem('vpn_orders');
+            if (raw) { memoryOrdersFallback = JSON.parse(raw); return memoryOrdersFallback; }
+        } catch (e) {}
+        return memoryOrdersFallback;
+    }
+
+    function saveStoredOrders(orders) {
+        memoryOrdersFallback = orders;
+        try { localStorage.setItem('vpn_orders', JSON.stringify(orders)); } catch (e) {}
+        pushGlobalStateToCloud(isShopClosed(), getPromoRules(), Math.floor(Date.now() / 1000), orders);
+    }
+
+    async function checkTelegramBotReplies() {
+        if (!TELEGRAM_BOT_TOKEN) return false;
+        try {
+            await pullGlobalStateFromCloud();
+            const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?limit=80`);
+            const data = await res.json();
+            if (!data.ok || !data.result) return false;
+
+            let orders = getStoredOrders();
+            let orderMap = new Map();
+            orders.forEach(o => { if (o && o.id) orderMap.set(String(o.id), o); });
+            let updated = false;
+
+            for (const item of data.result) {
+                const msg = item.message;
+                if (!msg) continue;
+                let rawText = (msg.text || msg.caption || '').trim();
+
+                if (rawText.includes('OAK K VPN') && rawText.includes('#')) {
+                    const idMatch = rawText.match(/#(\d+)/);
+                    if (idMatch && !orderMap.has(idMatch[1])) {
+                        const typeM = rawText.match(/အမျိုးအစား:\s*([^\n]+)/);
+                        const nameM = rawText.match(/နာမည်(?:\/Key)?:\s*([^\n]+)/);
+                        const regM = rawText.match(/Region:\s*([^\n]+)/);
+                        const pkgM = rawText.match(/Package:\s*([^\n]+)/);
+                        const expM = rawText.match(/ကုန်ဆုံးရက်:\s*([^\n]+)/);
+                        const priceM = rawText.match(/ကျသင့်ငွေ:\s*([\d,]+)/);
+                        orderMap.set(idMatch[1], {
+                            id: Number(idMatch[1]),
+                            type: typeM ? typeM[1].trim() : 'Key အသစ်',
+                            identifier: nameM ? nameM[1].trim() : '-',
+                            region: regM ? regM[1].trim() : 'Singapore 🇸🇬',
+                            package: pkgM ? pkgM[1].trim() : '100 GB - ၁ လ (6,000 ကျပ်)',
+                            rawPrice: priceM ? parseInt(priceM[1].replace(/,/g, ''), 10) : 6000,
+                            expDate: expM ? expM[1].trim() : '-',
+                            receipt: '',
+                            adminResponse: '',
+                            adminImage: ''
+                        });
+                        updated = true;
+                    }
+                }
+
+                let targetOrderId = null;
+                let responseKey = rawText;
+
+                if (msg.reply_to_message) {
+                    const origText = msg.reply_to_message.caption || msg.reply_to_message.text || '';
+                    const match = origText.match(/#(\d+)/);
+                    if (match && match[1]) targetOrderId = match[1];
+                }
+
+                if (!targetOrderId && rawText) {
+                    const directMatch = rawText.match(/^#?(\d{10,15})(?:\s+(.+))?/s);
+                    if (directMatch) {
+                        targetOrderId = directMatch[1];
+                        responseKey = (directMatch[2] || '').trim();
+                    }
+                }
+
+                if (targetOrderId && orderMap.has(String(targetOrderId))) {
+                    let order = orderMap.get(String(targetOrderId));
+                    if (responseKey) {
+                        responseKey = responseKey.replace(/^vless:\/\/vless:\/\//i, 'vless://');
+                        if (order.adminResponse !== responseKey) {
+                            order.adminResponse = responseKey;
+                            updated = true;
+                        }
+                    }
+
+                    let photoFileId = null;
+                    if (msg.photo && msg.photo.length > 0) {
+                        photoFileId = msg.photo[msg.photo.length - 1].file_id;
+                    } else if (msg.document && msg.document.mime_type && msg.document.mime_type.startsWith('image/')) {
+                        photoFileId = msg.document.file_id;
+                    }
+
+                    if (photoFileId && order.adminImageFileId !== photoFileId) {
+                        const photoUrl = await resolveTelegramFileUrl(photoFileId);
+                        if (photoUrl) {
+                            order.adminImageFileId = photoFileId;
+                            order.adminImage = photoUrl;
+                            updated = true;
+                        }
+                    }
+                }
+            }
+
+            if (updated) {
+                let combined = Array.from(orderMap.values()).sort((a, b) => Number(b.id) - Number(a.id));
+                saveStoredOrders(combined);
+            }
+            return updated;
+        } catch (err) { return false; }
+    }
+
+    applyShopStatusUI();
+    checkTelegramBotReplies();
+    setInterval(checkTelegramBotReplies, 4000);
+
+    function setOrderType(type) {
+        orderType = type;
+        document.getElementById('typeNew').classList.toggle('selected', type === 'new');
+        document.getElementById('typeRenewal').classList.toggle('selected', type !== 'new');
+        document.getElementById('nameGroup').style.display = type === 'new' ? 'block' : 'none';
+        document.getElementById('renewalGroup').style.display = type === 'new' ? 'none' : 'block';
+    }
+
+    function showStep(step) {
+        document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + step).classList.add('active');
+        for (let i = 1; i <= 4; i++) {
+            const ind = document.getElementById('indicator' + i);
+            if(ind) {
+                ind.classList.remove('active', 'completed');
+                if (i < step) ind.classList.add('completed');
+                if (i === step) ind.classList.add('active');
+            }
+        }
+        currentStep = step;
+    }
+
+    async function nextStep() {
+        await pullGlobalStateFromCloud();
+        if (isShopClosed()) { applyShopStatusUI(); return; }
+        if (currentStep < 4) showStep(currentStep + 1);
+    }
+    function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+
+    async function validateStep2() {
+        const val = orderType === 'new' ? document.getElementById('username').value.trim() : document.getElementById('prevKey').value.trim();
+        if (!val) { alert('⚠️ အချက်အလက် ထည့်သွင်းပေးပါ။'); return; }
+        nextStep();
+    }
+
+    function selectRegion(name, flag, el) {
+        document.querySelectorAll('.region-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedRegionName = name; selectedFlag = flag;
+    }
+
+    function selectPackage(pkgName, duration, price, months, el) {
+        document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedPkgName = pkgName; selectedDuration = duration; selectedRawPrice = price; selectedMonths = months;
+    }
+
+    function getFinalPayablePrice() { return Math.max(0, selectedRawPrice - appliedDiscount); }
+
+    async function prepareCheckout() {
+        const identifier = orderType === 'new' ? document.getElementById('username').value.trim() : document.getElementById('prevKey').value.trim();
+        const finalPrice = getFinalPayablePrice();
+        document.getElementById('summaryText').innerText = `${orderType === 'new' ? 'Key အသစ်' : 'သက်တမ်းတိုး'} | ${identifier} | ${selectedRegionName} ${selectedFlag} | ${selectedPkgName} (${selectedDuration}) - ${finalPrice.toLocaleString()} ကျပ်`;
+        document.getElementById('payAmount').innerText = `ကျသင့်ငွေ - ${finalPrice.toLocaleString()} ကျပ်`;
+        nextStep();
+    }
+
+    function previewReceiptBeforeSubmit(input) {
+        if (input && input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('receiptPreviewImg').src = e.target.result;
+                document.getElementById('receiptPreviewBox').classList.add('show');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    async function sendOrderToTelegram(orderObj, rawFile) {
+        if (!TELEGRAM_BOT_TOKEN) return;
+        const captionText = `🔔 <b>OAK K VPN - အော်ဒါအသစ်ဝင်ပါသည်!</b>\n\n🆔 <b>Order ID:</b> <code>#${orderObj.id}</code>\n📌 <b>အမျိုးအစား:</b> ${orderObj.type}\n👤 <b>နာမည်/Key:</b> <code>${orderObj.identifier}</code>\n🌐 <b>Region:</b> ${orderObj.region}\n📦 <b>Package:</b> ${orderObj.package}\n📅 <b>ကုန်ဆုံးရက်:</b> ${orderObj.expDate}\n💰 <b>ကျသင့်ငွေ:</b> ${orderObj.rawPrice.toLocaleString()} ကျပ်\n\n💡 <i>(ဤစာကို Reply ထောက်၍ V2box Key နှင့် Info ပုံ တိုက်ရိုက်ပြန်ပို့နိုင်ပါသည်)</i>`;
+        try {
+            const formData = new FormData();
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('caption', captionText);
+            formData.append('parse_mode', 'HTML');
+            if (rawFile) formData.append('photo', rawFile);
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+        } catch (err) {}
+    }
+
+    async function submitOrder() {
+        const fileInput = document.getElementById('receiptImg');
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) { alert('⚠️ ငွေလွှဲပြေစာ ပုံ အရင်တင်ပေးပါ။'); return; }
+        document.getElementById('submitOrderBtn').disabled = true;
+        const identifier = orderType === 'new' ? document.getElementById('username').value.trim() : document.getElementById('prevKey').value.trim();
+        const rawFile = fileInput.files[0];
+
+        let reader = new FileReader();
+        reader.onload = async function(e) {
+            let expiryDate = new Date();
+            expiryDate.setMonth(expiryDate.getMonth() + selectedMonths);
+            const finalPrice = getFinalPayablePrice();
+            let orderObj = {
+                id: Date.now(),
+                type: orderType === 'new' ? 'Key အသစ်' : 'သက်တမ်းတိုး',
+                identifier: identifier,
+                region: `${selectedRegionName} ${selectedFlag}`,
+                package: `${selectedPkgName} - ${selectedDuration} (${finalPrice.toLocaleString()} ကျပ်)`,
+                rawPrice: finalPrice,
+                expDate: expiryDate.toLocaleDateString(),
+                receipt: e.target.result,
+                adminResponse: '',
+                adminImage: ''
+            };
+            let orders = getStoredOrders();
+            orders.unshift(orderObj);
+            saveStoredOrders(orders);
+            await sendOrderToTelegram(orderObj, rawFile);
+            currentOrderId = orderObj.id;
+            isGuideOpen = false;
+            document.getElementById('submitOrderBtn').disabled = false;
+            showCustomerResultScreen(orderType, orderObj.id);
+        };
+        reader.readAsDataURL(rawFile);
+    }
+
+    function showCustomerResultScreen(type, orderId) {
+        currentStep = 5;
+        document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step5').classList.add('active');
+        document.getElementById('exitAfterKeyContainer').style.display = 'block';
+
+        let resultBox = document.getElementById('resultBox');
+        if (type === 'new') {
+            resultBox.innerHTML = `
+                <div style="font-size: 12px; color: var(--accent-color); background: var(--badge-bg); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+                    🔑 Order ID: <b>#${orderId}</b> (သိမ်းဆည်းထားပါ)
+                </div>
+                <div id="keyDisplayArea" style="text-align: center; padding: 15px; background: var(--input-bg); border-radius: 10px; border: 1px solid var(--card-border);">
+                    <p style="font-size: 13px; color: var(--text-muted); text-align: center;">⏳ Admin မှ Key နှင့် အချက်အလက်ပုံ ထည့်သွင်းပေးနေပါပြီ... ခေတ္တစောင့်ဆိုင်းပေးပါ။</p>
+                </div>
+            `;
+        } else {
+            resultBox.innerHTML = `
+                <div style="font-size: 12px; color: var(--accent-color); background: var(--badge-bg); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; text-align: center;">
+                    🔑 Order ID: <b>#${orderId}</b> (သိမ်းဆည်းထားပါ)
+                </div>
+                <div id="renewalResultContainer" style="text-align: center; padding: 15px; background: var(--input-bg); border-radius: 10px; border: 1px solid var(--card-border);">
+                    <p style="font-size: 14px; text-align: center; line-height: 1.6; color: var(--text-main);">
+                        ⏳ Admin မှ သက်တမ်းတိုးမှုကို စစ်ဆေးအတည်ပြုနေပါပြီ...
+                    </p>
+                </div>
+            `;
+        }
+        startCustomerPolling(type);
+    }
+
+    function copyResultKey() {
+        const val = document.getElementById('resultKeyField').value;
+        navigator.clipboard.writeText(val);
+        alert('✅ Key ကူးယူပြီးပါပြီ။ V2box App ထဲတွင် ထည့်သွင်းအသုံးပြုနိုင်ပါပြီ။');
+    }
+
+    let pollInterval = null;
+    let lastRenderedState = null;
+
+    function startCustomerPolling(type) {
+        if(pollInterval) clearInterval(pollInterval);
+        lastRenderedState = null;
+
+        pollInterval = setInterval(async () => {
+            if(!currentOrderId) return;
+            await checkTelegramBotReplies();
+
+            let orders = getStoredOrders();
+            let order = orders.find(o => String(o.id) === String(currentOrderId));
+            if (!order) return;
+
+            const hasText = order.adminResponse && order.adminResponse.trim() !== '';
+            const hasImg = order.adminImage && order.adminImage.trim() !== '';
+
+            if (hasText || hasImg) {
+                const currentState = `${order.adminResponse || ''}___${order.adminImage || ''}`;
+                if (lastRenderedState === currentState) return;
+                lastRenderedState = currentState;
+
+                let infoImgHtml = '';
+                if (hasImg) {
+                    infoImgHtml = `
+                        <div class="key-info-img-box">
+                            <div class="key-info-img-title">📊 Key အချက်အလက်ပုံ (ပုံကိုနှိပ်၍ ဖုန်းထဲသို့ သိမ်းဆည်းပါ)</div>
+                            <img src="${order.adminImage}" class="key-info-img" alt="Key Info" onclick="downloadKeyInfoImage('${order.adminImage}', '${order.id}')">
+                            <button type="button" class="save-img-btn" onclick="downloadKeyInfoImage('${order.adminImage}', '${order.id}')">
+                                📥 ပုံကို ဖုန်းထဲသို့ သိမ်းဆည်းရန် (Auto Save)
+                            </button>
+                        </div>
+                    `;
+                }
+
+                if(type === 'new') {
+                    const keyArea = document.getElementById('keyDisplayArea');
+                    if (keyArea) {
+                        const encodedKey = encodeURIComponent(order.adminResponse || '');
+                        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodedKey}`;
+
+                        let keyInputSection = hasText ? `
+                            <div style="display:flex; gap:8px; margin-bottom:8px;">
+                                <input type="text" id="resultKeyField" readonly style="font-size: 12px; flex:1;" value="${order.adminResponse}">
+                                <button class="btn" style="width:auto; padding:8px 12px; font-size:12px; background-color:var(--accent-color); color:#fff;" onclick="copyResultKey()">📋 Copy</button>
+                            </div>
+                            <button type="button" class="direct-import-btn" onclick="importKeyToV2boxApp('${encodedKey}')">
+                                🚀 V2box App ထဲသို့ တိုက်ရိုက်ထည့်မည် (One-Click)
+                            </button>
+                            <div style="text-align:center;">
+                                <div class="qr-code-box">
+                                    <img src="${qrUrl}" alt="V2box QR Code">
+                                    <div class="qr-label">📷 V2box / v2rayNG ဖြင့် Scan ဖတ်ရန်</div>
+                                </div>
+                            </div>
+                        ` : `<p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">⏳ Key စာသား ထပ်မံပေးပို့နေပါသည်...</p>`;
+
+                        keyArea.innerHTML = `
+                            ${keyInputSection}
+                            <p style="font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.5; margin-top: 8px;">
+                                Admin မှ အချက်အလက် ထည့်သွင်းပေးပြီးဖြစ်ပါသည်။<br>
+                                <b style="color:var(--accent-color);">V2box / v2rayNG / Hiddify စသည့် အက်ပ်များတွင် ထည့်သွင်းအသုံးပြုနိုင်ပါသည်။</b>
+                            </p>
+                            ${infoImgHtml}
+                            <button type="button" class="guide-toggle-btn" id="guideToggleBtn" onclick="toggleUserGuide()">
+                                📖 One-Click နှင့် QR Code အသုံးပြုနည်း လမ်းညွှန်ကြည့်ရန်
+                            </button>
+                            <div class="guide-box" id="userGuideBox">
+                                <div class="guide-step">
+                                    <span class="guide-badge">အဆင့် ၁</span>
+                                    ဖုန်းတွင် <b>V2Box</b> သို့မဟုတ် <b>v2rayNG</b> အက်ပ်မရှိသေးပါက အောက်ပါခလုတ်များမှ တိုက်ရိုက်ဒေါင်းလုဒ်ဆွဲပါ-
+                                    <div class="app-dl-grid">
+                                        <a href="https://play.google.com/store/apps/details?id=dev.hexasoftware.v2box" target="_blank" class="app-dl-btn">🤖 V2Box (Play Store)</a>
+                                        <a href="https://apps.apple.com/app/v2box-v2ray-client/id6446814690" target="_blank" class="app-dl-btn">🍎 V2Box (App Store)</a>
+                                        <a href="https://play.google.com/store/apps/details?id=com.v2ray.ang" target="_blank" class="app-dl-btn">⚡ v2rayNG (Android)</a>
+                                        <a href="https://github.com/2dust/v2rayNG/releases" target="_blank" class="app-dl-btn">📥 v2rayNG (Direct APK)</a>
+                                    </div>
+                                </div>
+                                <div class="guide-step">
+                                    <span class="guide-badge green">နည်းလမ်း ၁ (One-Click)</span>
+                                    အပေါ်ရှိ အစိမ်းရောင် <b>"🚀 V2box App ထဲသို့ တိုက်ရိုက်ထည့်မည် (One-Click)"</b> ခလုတ်ကို နှိပ်လိုက်ရုံဖြင့် V2Box အက်ပ်ပွင့်လာပြီး Key တန်းဝင်သွားပါမည်။
+                                </div>
+                                <div class="guide-step">
+                                    <span class="guide-badge purple">နည်းလမ်း ၂ (QR Code)</span>
+                                    အပေါ်ရှိ <b>QR Code ပုံ</b>ကို Screenshot ရိုက်ယူပြီး V2Box အက်ပ်ထဲရှိ <b>Configs ➔ (+) ➔ Scan QR code</b> ဖြင့် Scan ဖတ်နိုင်ပါသည်။
+                                </div>
+                                <div class="guide-step">
+                                    <span class="guide-badge">နည်းလမ်း ၃ (Copy ကူးနည်း)</span>
+                                    အပေါ်ရှိ <b>"📋 Copy"</b> ခလုတ်ကိုနှိပ်ပြီး V2Box ထဲရှိ <b>Configs ➔ (+) ➔ Import v2ray uri from clipboard</b> ကိုနှိပ်၍လည်း ထည့်သွင်းနိုင်ပါသည်။
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    const renewalContainer = document.getElementById('renewalResultContainer');
+                    if (renewalContainer) {
+                        renewalContainer.innerHTML = `
+                            <p style="font-size: 14px; text-align: center; line-height: 1.6; color: var(--text-main);">
+                                <b style="color: #4ade80; font-size: 16px; display:block; text-align: center;">✅ ${order.adminResponse || 'သက်တမ်းတိုးမှု အောင်မြင်ပါပြီ။'}</b>
+                            </p>
+                            ${infoImgHtml}
+                        `;
+                    }
+                }
+            }
+        }, 3000);
+    }
+
+    function resetAndExitPortal() {
+        if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+        currentOrderId = null;
+        setOrderType('new');
+        showStep(1);
+        applyShopStatusUI();
+    }
+
+    function copyTextDirect(txt) { navigator.clipboard.writeText(txt); alert('✅ ကူးယူပြီးပါပြီ။'); }
+    function openCheckOrderView() { document.getElementById('portalView').style.display = 'none'; document.getElementById('checkOrderView').style.display = 'block'; }
+
+    async function searchCustomerOrderSecure() {
+        const query = (document.getElementById('lookupInput').value || '').trim().toLowerCase();
+        const container = document.getElementById('lookupResultsContainer');
+        if (!query) return;
+        container.innerHTML = `<div style="text-align: center; padding: 15px; color: var(--text-muted);">⏳ ရှာဖွေနေပါသည်...</div>`;
+        await checkTelegramBotReplies();
+        let filtered = getStoredOrders().filter(o => String(o.id).includes(query) || (o.identifier || '').toLowerCase().includes(query));
+        container.innerHTML = filtered.length === 0 ? `<div style="text-align:center; padding:15px; color:#f87171;">မှတ်တမ်း မတွေ့ပါ။</div>` : '';
+        filtered.forEach(order => {
+            const hasResp = (order.adminResponse && order.adminResponse.trim() !== '') || (order.adminImage && order.adminImage.trim() !== '');
+            const statusBadge = hasResp ? `<span class="status-tag done">✅ ရရှိပြီး</span>` : `<span class="status-tag wait">⏳ Admin စိစစ်ဆဲ</span>`;
+            const countdownHtml = getRemainingDaysBadge(order.expDate);
+            const encodedKey = encodeURIComponent(order.adminResponse || '');
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodedKey}`;
+            const safeIdentifier = (order.identifier || '').replace(/'/g, "\\'");
+
+            let respSection = '';
+            if (hasResp) {
+                let imgHtml = order.adminImage ? `
+                    <div class="key-info-img-box">
+                        <div class="key-info-img-title">📊 Key အချက်အလက်ပုံ</div>
+                        <img src="${order.adminImage}" class="key-info-img" onclick="downloadKeyInfoImage('${order.adminImage}', '${order.id}')">
+                        <button type="button" class="save-img-btn" onclick="downloadKeyInfoImage('${order.adminImage}', '${order.id}')">📥 ပုံကို ဖုန်းထဲသို့ သိမ်းဆည်းရန်</button>
+                    </div>
+                ` : '';
+
+                if (order.type === 'Key အသစ်' && order.adminResponse) {
+                    respSection = `
+                        <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--card-border); display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                            <span style="font-size:11.5px; color:var(--accent-color); font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:200px;">${order.adminResponse}</span>
+                            <button class="mini-copy-btn" onclick="copyOrderResponse(${order.id})">📋 Copy Key</button>
+                        </div>
+                        <button type="button" class="direct-import-btn" onclick="importKeyToV2boxApp('${encodedKey}')">🚀 V2box App ထဲသို့ တိုက်ရိုက်ထည့်မည် (One-Click)</button>
+                        <div style="text-align:center;">
+                            <div class="qr-code-box">
+                                <img src="${qrUrl}" alt="QR Code">
+                                <div class="qr-label">📷 V2box ဖြင့် Scan ဖတ်ရန်</div>
+                            </div>
+                        </div>
+                        ${imgHtml}
+                    `;
+                } else {
+                    respSection = `<div style="margin-top:8px; color:#16a34a; font-weight:bold;">✅ ${order.adminResponse || 'သက်တမ်းတိုးပြီးပါပြီ'}</div>${imgHtml}`;
+                }
+            }
+
+            container.innerHTML += `
+                <div class="order-lookup-card">
+                    <div class="order-lookup-header"><b>ID: #${order.id} | ${order.type}</b>${statusBadge}</div>
+                    <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+                        <div>👤 နာမည်/Key: <b style="color:var(--text-main);">${order.identifier}</b></div>
+                        <div>🌐 Region: <b style="color:var(--text-main);">${order.region}</b></div>
+                        <div>📦 Package: <b style="color:var(--text-main);">${order.package}</b></div>
+                        <div>📅 ကုန်ဆုံးရက်: <b style="color:var(--accent-color);">${order.expDate}</b></div>
+                        <div>${countdownHtml}</div>
+                    </div>
+                    ${respSection}
+                    <button type="button" class="quick-renew-btn" onclick="startQuickRenewal('${safeIdentifier}')">🔄 ဤ Key ကို သက်တမ်းတိုးမည်</button>
+                </div>
+            `;
+        });
+    }
+
+    function openAdminLogin(e) {
+        if (e) e.preventDefault();
+        document.getElementById('portalView').style.display = 'none';
+        document.getElementById('shopClosedView').style.display = 'none';
+        document.getElementById('checkOrderView').style.display = 'none';
+        document.getElementById('adminLoginView').style.display = 'block';
+    }
+
+    function backToPortal() {
+        document.getElementById('checkOrderView').style.display = 'none';
+        document.getElementById('adminLoginView').style.display = 'none';
+        document.getElementById('adminDashboardView').style.display = 'none';
+        applyShopStatusUI();
+    }
+
+    async function verifyAdmin() {
+        if (document.getElementById('adminPassInput').value === '6677') {
+            document.getElementById('adminLoginView').style.display = 'none';
+            document.getElementById('adminDashboardView').style.display = 'block';
+            await checkTelegramBotReplies();
+            renderAdminPromoList();
+            loadOrdersTables();
+        } else { alert('❌ Password မှားနေသည်။'); }
+    }
+
+    async function loadOrdersTables() {
+        await checkTelegramBotReplies();
+        let orders = getStoredOrders();
+        let totalRev = 0;
+        let pending = 0;
+        orders.forEach(o => {
+            totalRev += (o.rawPrice || 6000);
+            if (!o.adminResponse && !o.adminImage) pending++;
+        });
+
+        document.getElementById('statTotalOrders').innerText = orders.length;
+        document.getElementById('statPendingOrders').innerText = pending;
+        document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString() + ' ကျပ်';
+
+        const newTbody = document.getElementById('newOrdersTableBody');
+        const renewalTbody = document.getElementById('renewalOrdersTableBody');
+        let newOrders = orders.filter(o => o.type === 'Key အသစ်');
+        let renewalOrders = orders.filter(o => o.type === 'သက်တမ်းတိုး');
+
+        newTbody.innerHTML = newOrders.length === 0 ? `<tr><td colspan="5" style="text-align:center; padding: 15px;">မှတ်တမ်း မရှိသေးပါ။</td></tr>` : '';
+        newOrders.forEach(order => {
+            let receiptHtml = order.receipt ? `<br><img src="${order.receipt}" class="receipt-thumb" onclick="showDirectImageModal('${order.receipt}')">` : '';
+            let respDisplay = order.adminResponse ? `<br><button class="copy-btn" onclick="copyOrderResponse(${order.id})">📋 Copy Key</button>` : `<br><span style="color:#f87171; font-weight:bold;">စောင့်ဆိုင်း</span>`;
+            newTbody.innerHTML += `
+                <tr>
+                    <td style="text-align:left;"><b>#${order.id}</b><br>${order.identifier}${receiptHtml}</td>
+                    <td>${order.region}</td>
+                    <td style="text-align:left;">${order.package}${respDisplay}</td>
+                    <td style="color:var(--accent-color); font-weight:bold;">${order.expDate}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn edit-btn" onclick="openEditModal(${order.id})">ပြင်ရန်</button>
+                            <button class="action-btn delete-btn" onclick="deleteOrder(${order.id})">ဖျက်</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        renewalTbody.innerHTML = renewalOrders.length === 0 ? `<tr><td colspan="5" style="text-align:center; padding: 15px;">မှတ်တမ်း မရှိသေးပါ။</td></tr>` : '';
+        renewalOrders.forEach(order => {
+            let receiptHtml = order.receipt ? `<br><img src="${order.receipt}" class="receipt-thumb" onclick="showDirectImageModal('${order.receipt}')">` : '';
+            let respDisplay = order.adminResponse ? `<br><span style="color:#4ade80; font-weight:bold;">ပြီးစီးပြီ</span>` : `<br><span style="color:#f87171; font-weight:bold;">စောင့်ဆိုင်း</span>`;
+            renewalTbody.innerHTML += `
+                <tr>
+                    <td style="text-align:left;"><b>#${order.id}</b><br>${order.identifier}${receiptHtml}</td>
+                    <td>${order.region}</td>
+                    <td style="text-align:left;">${order.package}${respDisplay}</td>
+                    <td style="color:var(--accent-color); font-weight:bold;">${order.expDate}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn edit-btn" onclick="openEditModal(${order.id})">ပြင်ရန်</button>
+                            <button class="action-btn delete-btn" onclick="deleteOrder(${order.id})">ဖျက်</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function copyOrderResponse(id) {
+        let order = getStoredOrders().find(o => o.id == id);
+        if (order && order.adminResponse) { navigator.clipboard.writeText(order.adminResponse); alert('✅ Key ကူးယူပြီးပါပြီ။'); }
+    }
+
+    function showDirectImageModal(src) {
+        if (!src) return;
+        document.getElementById('modalImage').src = src;
+        document.getElementById('imageModal').classList.add('show');
+    }
+    function closeImageModal() { document.getElementById('imageModal').classList.remove('show'); }
+
+    function deleteOrder(id) {
+        if (confirm('ဤမှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား?')) {
+            let orders = getStoredOrders().filter(o => o.id != id);
+            saveStoredOrders(orders);
+            loadOrdersTables();
+        }
+    }
+
+    function openEditModal(id) {
+        let order = getStoredOrders().find(o => o.id == id);
+        if (order) {
+            document.getElementById('editId').value = order.id;
+            document.getElementById('editKeyVal').value = order.adminResponse || (order.type === 'သက်တမ်းတိုး' ? 'သက်တမ်းတိုးပြီးပါပြီ' : '');
+            document.getElementById('editModal').classList.add('show');
+        }
+    }
+    function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
+
+    async function saveAdminResponse() {
+        let id = Number(document.getElementById('editId').value);
+        let respVal = document.getElementById('editKeyVal').value.trim();
+        let imgInput = document.getElementById('editKeyImgInput');
+
+        respVal = respVal.replace(/^vless:\/\/vless:\/\//i, 'vless://');
+        let orders = getStoredOrders();
+        let order = orders.find(o => o.id == id);
+        if (order) {
+            order.adminResponse = respVal;
+            if (imgInput && imgInput.files && imgInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = async function(e) {
+                    order.adminImage = e.target.result;
+                    saveStoredOrders(orders);
+                    closeEditModal();
+                    loadOrdersTables();
+                };
+                reader.readAsDataURL(imgInput.files[0]);
+            } else {
+                saveStoredOrders(orders);
+                closeEditModal();
+                loadOrdersTables();
+            }
+            if (TELEGRAM_BOT_TOKEN && respVal) {
+                try {
+                    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: `#${id} ${respVal}` })
+                    });
+                } catch (e) {}
+            }
+        }
+    }
+
+    function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        document.body.setAttribute('data-theme', next);
+    }
+</script>
+
+</body>
+</html>

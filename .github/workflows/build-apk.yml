@@ -1,0 +1,91 @@
+name: Build OAK VPN APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Prepare Web Assets & Auto-Update Config
+        run: |
+          mkdir -p www
+          if [ -f "index.html" ]; then cp index.html www/index.html; fi
+          if [ -f "www.index.html" ]; then cp www.index.html www/index.html; fi
+          if [ -f "icon.png" ]; then cp icon.png www/icon.png; fi
+
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          OWNER_NAME="${GITHUB_REPOSITORY%/*}"
+          LIVE_URL="https://${OWNER_NAME}.github.io/${REPO_NAME}/"
+
+          cat << EOF > capacitor.config.json
+          {
+            "appId": "com.oakk.vpnofficial",
+            "appName": "OAK VPN",
+            "webDir": "www",
+            "server": {
+              "url": "${LIVE_URL}",
+              "cleartext": true
+            },
+            "plugins": {
+              "SplashScreen": {
+                "launchShowDuration": 0,
+                "launchAutoHide": true
+              }
+            }
+          }
+          EOF
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Capacitor & Add Android
+        run: |
+          npm install
+          npx cap add android
+          npx cap sync android
+
+      - name: Apply Full Size App Logo (icon.png)
+        run: |
+          ICON_FILE=""
+          if [ -f "icon.png" ]; then ICON_FILE="icon.png"; elif [ -f "www/icon.png" ]; then ICON_FILE="www/icon.png"; fi
+          if [ -n "$ICON_FILE" ]; then
+            rm -rf android/app/src/main/res/mipmap-anydpi-v26
+            for dir in android/app/src/main/res/mipmap-*; do
+              if [ -d "$dir" ]; then
+                cp "$ICON_FILE" "$dir/ic_launcher.png"
+                cp "$ICON_FILE" "$dir/ic_launcher_round.png"
+                cp "$ICON_FILE" "$dir/ic_launcher_foreground.png"
+              fi
+            done
+          fi
+
+      - name: Enable Cleartext & Hardware Acceleration
+        run: |
+          sed -i 's/<application/<application android:usesCleartextTraffic="true" android:hardwareAccelerated="true"/g' android/app/src/main/AndroidManifest.xml
+
+      - name: Build Debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OAK-VPN-OFFICIAL-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
